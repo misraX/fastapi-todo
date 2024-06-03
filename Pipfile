@@ -9,6 +9,7 @@ fastapi = "*"
 [dev-packages]
 conventional-pre-commit = "*"
 pre-commit = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.12"
