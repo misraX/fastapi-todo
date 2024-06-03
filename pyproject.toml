@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+minversion = "6.0"
+markers = [
+    "asyncio: mark test to be run with asyncio",
+    "unittest: unit test"
+]
+testpaths = [
+    "test",
+]
+addopts = "--asyncio-mode=auto"
