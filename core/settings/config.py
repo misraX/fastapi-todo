@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
     base_dir: Path = Path(__file__).parent.parent.parent
     app_dir: Path = os.path.join(base_dir, "app")
+    secret_key: str = ""
 
 
 @lru_cache

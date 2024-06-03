@@ -58,6 +58,18 @@ session = async_scoped_session(
 )
 
 
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    _session = async_sessionmaker(
+        class_=AsyncSession,
+        sync_session_class=RoutingSession,
+        expire_on_commit=False,
+    )()
+    try:
+        yield _session
+    finally:
+        await _session.close()
+
+
 @asynccontextmanager
 async def session_factory() -> AsyncGenerator[AsyncSession, None]:
     _session = async_sessionmaker(
