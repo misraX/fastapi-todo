@@ -46,11 +46,6 @@ app.include_router(
     prefix="/user",
     tags=["auth"],
 )
-app.include_router(
-    fastapi_users.get_verify_router(BaseUser),
-    prefix="/user",
-    tags=["auth"],
-)
 
 
 @app.get("/")
