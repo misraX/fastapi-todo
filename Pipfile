@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
+fastapi-users = {extras = ["sqlalchemy"], version = "*"}
+pydantic-settings = "*"
+alembic = "*"
+asyncpg = "*"
 
 [dev-packages]
 conventional-pre-commit = "*"
