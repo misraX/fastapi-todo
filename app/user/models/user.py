@@ -17,10 +17,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import relationship
 
+import app.todo.models as reload_related_models  # noqa
 from core.db import BaseModel
 from core.db.session import get_async_session
 from core.settings.config import settings
-import app.todo.models as reload_related_models  # noqa
 
 SECRET = settings.secret_key
 
@@ -44,6 +44,9 @@ async def get_user_db(async_session: AsyncSession = Depends(get_async_session)):
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
+
+    def __init__(self, user_db: SQLAlchemyUserDatabase = UserDB):
+        super().__init__(user_db=user_db)
 
     async def get_by_username(self, username: str) -> models.UP:
         """
