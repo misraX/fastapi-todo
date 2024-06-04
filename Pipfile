@@ -15,6 +15,12 @@ pytest-asyncio = "*"
 conventional-pre-commit = "*"
 pre-commit = "*"
 pytest = "*"
+pytest-mock = "*"
+asgi-lifespan = "*"
+httpx-oauth = "*"
+coverage = "*"
+pytest-dotenv = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.12"

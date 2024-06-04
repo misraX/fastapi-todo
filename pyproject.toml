@@ -8,3 +8,4 @@ testpaths = [
     "test",
 ]
 addopts = "--asyncio-mode=auto"
+env_files = [".env"]
