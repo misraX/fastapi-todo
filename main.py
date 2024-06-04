@@ -6,6 +6,7 @@ from fastapi_users.authentication import BearerTransport, AuthenticationBackend
 from fastapi_users.authentication import JWTStrategy
 
 from app.todo.api import routes as todo_routes
+from app.todo.repos.task import TaskRepository
 from app.user.models.user import get_user_db, UserManager, User
 from app.user.schema.request import UserCreateRequestScheme
 from app.user.schema.response import UserCreateResponseScheme
@@ -50,5 +51,7 @@ app.include_router(
 
 
 @app.get("/")
-async def read_root():
-    return {"message": "Welcome to the FastAPI application"}
+async def read_root(task_repo=Depends(TaskRepository)):
+    tasks = await task_repo.get_tasks()
+    tasks = [task.username for task in tasks if tasks]
+    return {"message": f"Welcome to the FastAPI application {tasks}"}

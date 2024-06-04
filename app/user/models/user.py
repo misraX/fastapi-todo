@@ -15,16 +15,20 @@ from sqlalchemy import Column
 from sqlalchemy import String, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import relationship
 
 from core.db import BaseModel
 from core.db.session import get_async_session
 from core.settings.config import settings
+import app.todo.models as reload_related_models  # noqa
 
 SECRET = settings.secret_key
 
 
 class User(SQLAlchemyBaseUserTableUUID, BaseModel):
     username = Column(String, unique=True)
+    todos = relationship("Todo", back_populates="owner")
+    tasks = relationship("Task", back_populates="owner")
 
 
 class UserDB(SQLAlchemyUserDatabase):

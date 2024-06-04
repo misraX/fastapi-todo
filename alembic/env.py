@@ -6,16 +6,16 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from app.user.models import user
+from app.todo.models import task  # noqa
+from app.todo.models import todo  # noqa
+from app.user.models import user  # noqa
+from core.db import BaseModel
 from core.settings.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-USER_MODELS = [user.User.metadata]
-
-MODELS = USER_MODELS
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -25,7 +25,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = MODELS
+target_metadata = BaseModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
