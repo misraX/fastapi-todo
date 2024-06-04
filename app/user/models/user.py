@@ -1,11 +1,18 @@
 import uuid
+from typing import Optional
 
 from fastapi import Depends
+from fastapi import Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
+from fastapi_users import exceptions, models, schemas
+from fastapi_users.models import UP
 from fastapi_users_db_sqlalchemy import (
     SQLAlchemyUserDatabase,
     SQLAlchemyBaseUserTableUUID,
 )
+from sqlalchemy import Column
+from sqlalchemy import String, func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.db import BaseModel
@@ -16,13 +23,77 @@ SECRET = settings.secret_key
 
 
 class User(SQLAlchemyBaseUserTableUUID, BaseModel):
-    ...
+    username = Column(String, unique=True)
+
+
+class UserDB(SQLAlchemyUserDatabase):
+    async def get_by_username(self, username: str) -> Optional[UP]:
+        statement = select(self.user_table).where(
+            func.lower(self.user_table.username) == func.lower(username)
+        )
+        return await self._get_user(statement)
 
 
 async def get_user_db(async_session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(async_session, User)
+    yield UserDB(async_session, User)
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
+
+    async def get_by_username(self, username: str) -> models.UP:
+        """
+        Get a user by username.
+
+        :param username: username of the user to retrieve.
+        :raises UserNotExists: The user does not exist.
+        :return: A user.
+        """
+        user = await self.user_db.get_by_username(username)
+
+        if user is None:
+            raise exceptions.UserNotExists()
+
+        return user
+
+    async def create(
+        self,
+        user_create: schemas.UC,
+        safe: bool = False,
+        request: Optional[Request] = None,
+    ) -> models.UP:
+        """
+        Create a user in database.
+
+        Triggers the on_after_register handler on success.
+
+        :param user_create: The UserCreate model to create.
+        :param safe: If True, sensitive values like is_superuser or is_verified
+        will be ignored during the creation, defaults to False.
+        :param request: Optional FastAPI request that
+        triggered the operation, defaults to None.
+        :raises UserAlreadyExists: A user already exists with the same e-mail.
+        :return: A new user.
+        """
+        await self.validate_password(user_create.password, user_create)
+
+        existing_user = await self.user_db.get_by_username(user_create.email)
+        if existing_user is not None:
+            raise exceptions.UserAlreadyExists()
+
+        user_dict = (
+            user_create.create_update_dict()
+            if safe
+            else user_create.create_update_dict_superuser()
+        )
+        password = user_dict.pop("password")
+        user_dict["hashed_password"] = self.password_helper.hash(password)
+
+        try:
+            created_user = await self.user_db.create(user_dict)
+            await self.on_after_register(created_user, request)
+
+            return created_user
+        except IntegrityError:
+            raise exceptions.UserAlreadyExists()
