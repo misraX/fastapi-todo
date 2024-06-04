@@ -4,11 +4,11 @@ from fastapi import FastAPI, Depends
 from fastapi_users import FastAPIUsers
 from fastapi_users.authentication import BearerTransport, AuthenticationBackend
 from fastapi_users.authentication import JWTStrategy
-from fastapi_users.schemas import BaseUser
 
 from app.todo.api import routes as todo_routes
 from app.user.models.user import get_user_db, UserManager, User
 from app.user.schema.request import UserCreateRequestScheme
+from app.user.schema.response import UserCreateResponseScheme
 from core.settings.config import settings
 
 SECRET = settings.secret_key
@@ -41,7 +41,9 @@ app.include_router(
     tags=["auth"],
 )
 app.include_router(
-    fastapi_users.get_register_router(BaseUser, UserCreateRequestScheme),
+    fastapi_users.get_register_router(
+        UserCreateResponseScheme, UserCreateRequestScheme
+    ),
     prefix="/user",
     tags=["auth"],
 )
