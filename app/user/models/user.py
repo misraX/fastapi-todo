@@ -1,10 +1,10 @@
 import uuid
-from typing import Optional
+from typing import Optional, Union
 
 from fastapi import Depends
 from fastapi import Request
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi_users import BaseUserManager, UUIDIDMixin
+from fastapi_users import BaseUserManager, UUIDIDMixin, InvalidPasswordException
 from fastapi_users import exceptions, models, schemas
 from fastapi_users.models import UP
 from fastapi_users_db_sqlalchemy import (
@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import relationship
 
 import app.todo.models as reload_related_models  # noqa
+from app.user.schema.request import UserCreateRequestScheme
 from core.db import BaseModel
 from core.db.session import get_async_session
 from core.settings.config import settings
@@ -132,3 +133,15 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             await self.user_db.update(user, {"hashed_password": updated_password_hash})
 
         return user
+
+    async def validate_password(
+        self,
+        password: str,
+        user: Union[UserCreateRequestScheme, User],
+    ) -> None:
+        if len(password) < 8:
+            raise InvalidPasswordException(
+                reason="Password should be at least 8 characters"
+            )
+        if user.email in password:
+            raise InvalidPasswordException(reason="Password should not contain e-mail")
