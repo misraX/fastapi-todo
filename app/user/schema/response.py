@@ -1,5 +1,5 @@
 from fastapi_users.schemas import BaseUser
 
 
-class UserCreateRequestScheme(BaseUser):
+class UserCreateResponseScheme(BaseUser):
     username: str
