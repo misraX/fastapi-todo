@@ -12,7 +12,7 @@ from fastapi_users_db_sqlalchemy import (
     SQLAlchemyBaseUserTableUUID,
 )
 from sqlalchemy import Column
-from sqlalchemy import String, func, select
+from sqlalchemy import String, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -29,9 +29,7 @@ class User(SQLAlchemyBaseUserTableUUID, BaseModel):
 
 class UserDB(SQLAlchemyUserDatabase):
     async def get_by_username(self, username: str) -> Optional[UP]:
-        statement = select(self.user_table).where(
-            func.lower(self.user_table.username) == func.lower(username)
-        )
+        statement = select(self.user_table).where(self.user_table.username == username)
         return await self._get_user(statement)
 
 
