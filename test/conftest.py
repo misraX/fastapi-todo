@@ -22,6 +22,8 @@ from pydantic import UUID4, SecretStr
 from pytest_mock import MockerFixture
 
 from app.user.models.user import UserManager as BaseUserManager
+from app.user.schema.request import UserCreateRequestScheme
+from app.user.schema.response import UserCreateResponseScheme
 
 password_helper = PasswordHelper()
 
@@ -45,11 +47,11 @@ class UserModel(models.UserProtocol[IDType]):
     is_verified: bool = False
 
 
-class User(schemas.BaseUser[IDType]):
+class User(UserCreateResponseScheme):
     ...
 
 
-class UserCreate(schemas.BaseUserCreate):
+class UserCreate(UserCreateRequestScheme):
     ...
 
 
