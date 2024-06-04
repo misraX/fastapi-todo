@@ -1,16 +1,16 @@
-"""Initiale alembic versions
+"""Upgrade owner
 
-Revision ID: 25454f0483a1
-Revises:
-Create Date: 2024-06-03 22:52:28.691656
+Revision ID: a4a4ef4040ce
+Revises: 6c4bcbfcf5f3
+Create Date: 2024-06-04 05:38:16.980790
 
 """
 from typing import Sequence, Union
 
 
 # revision identifiers, used by Alembic.
-revision: str = "25454f0483a1"
-down_revision: Union[str, None] = None
+revision: str = "a4a4ef4040ce"
+down_revision: Union[str, None] = "6c4bcbfcf5f3"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
