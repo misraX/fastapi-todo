@@ -5,7 +5,7 @@ from typing import TypeVar, Type
 
 from fastapi import Depends
 from fastapi_users.password import PasswordHelper
-from sqlalchemy import Select, and_
+from sqlalchemy import Select, and_, Delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.todo.models import Todo
@@ -38,7 +38,11 @@ class TodoRepositoryABC(abc.ABC):
     async def get_todos(
         self, user_id: uuid.UUID, skip: int, limit: int
     ) -> list[Todo] | None:
-        pass
+        ...
+
+    @abc.abstractmethod
+    async def delete_todo_by_id(self, todo_id: int, user_id: uuid.UUID) -> None:
+        ...
 
 
 class TodoRepository(TodoRepositoryABC):
@@ -67,3 +71,11 @@ class TodoRepository(TodoRepositoryABC):
         await self.session.commit()
         await self.session.refresh(todo)
         return todo
+
+    async def delete_todo_by_id(self, todo_id: int, user_id: uuid.UUID) -> None:
+        statement = Delete(Todo).where(
+            and_(Todo.id == todo_id, Todo.owner_id == user_id)
+        )
+        result = await self.session.execute(statement)
+        await self.session.commit()
+        return result

@@ -1,4 +1,3 @@
-from fastapi import APIRouter
 from fastapi import Depends
 
 from app.todo.models import Todo
@@ -6,8 +5,6 @@ from app.todo.repositories.todo import TodoRepository, TodoRepositoryABC
 from app.todo.schemas.request import TodoRequestSchema
 from app.user.models.user import User
 from core.db import unit_of_work
-
-router = APIRouter(prefix="/todo", tags=["todo"])
 
 
 class TodoService(object):
@@ -26,3 +23,6 @@ class TodoService(object):
 
     async def get_todos(self, user: User, skip: int, limit: int) -> list[Todo]:
         return await self.todo_repository.get_todos(user.id, skip, limit)
+
+    async def delete_todo_by_id(self, todo_id: int, user: User) -> None:
+        return await self.todo_repository.delete_todo_by_id(todo_id, user.id)

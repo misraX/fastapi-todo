@@ -1,6 +1,14 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
+from app.todo.schemas.common import CommonTodoTasksMixin
 
-class TodoRequestSchema(BaseModel):
-    title: str
-    description: str
+
+class TodoRequestSchema(CommonTodoTasksMixin, BaseModel):
+    ...
+
+
+class TaskRequestSchema(CommonTodoTasksMixin, BaseModel):
+    todo_id: int
+    priority: Optional[int]
