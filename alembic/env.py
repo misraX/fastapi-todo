@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.todo.models import task  # noqa
 from app.todo.models import todo  # noqa
+from app.todo.models import shared_todo  # noqa
 from app.user.models import user  # noqa
 from core.db import BaseModel
 from core.settings.config import settings

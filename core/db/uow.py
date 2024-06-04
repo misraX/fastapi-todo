@@ -1,19 +1,18 @@
 from functools import wraps
 
-from core.db import session
+from core.db.session import session
 
 
-class UnitOfWork(object):
-    def __call__(self, func):
-        @wraps(func)
-        async def _uow(*args, **kwargs):
-            try:
-                result = await func(*args, **kwargs)
-                await session.commit()
-            except Exception as e:
-                await session.rollback()
-                raise e
-
+def unit_of_work(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        try:
+            result = await func(*args, **kwargs)
             return result
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
 
-        return _uow()
+    return wrapper

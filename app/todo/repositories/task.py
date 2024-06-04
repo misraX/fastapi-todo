@@ -10,3 +10,6 @@ class TaskRepository:
         async with session_factory() as read_session:
             result = await read_session.execute(query)
         return result.scalars().all()
+
+    async def create_task(self):
+        ...
