@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 
 from app.todo.models import Todo
 from app.todo.repositories.todo import TodoRepository, TodoRepositoryABC
@@ -19,7 +19,9 @@ class TodoService(object):
         return result
 
     async def get_todo_by_id(self, todo_id: int, user: User):
-        return await self.todo_repository.get_todo_by_id(todo_id, user.id)
+        result = await self.todo_repository.get_todo_by_id(todo_id, user.id)
+        if not result:
+            raise HTTPException(404, detail="Todo does not exist")
 
     async def get_todos(self, user: User, skip: int, limit: int) -> list[Todo]:
         return await self.todo_repository.get_todos(user.id, skip, limit)

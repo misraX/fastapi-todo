@@ -1,28 +1,13 @@
 import abc
 import uuid
 from typing import AsyncGenerator
-from typing import TypeVar, Type
 
 from fastapi import Depends
-from fastapi_users.password import PasswordHelper
 from sqlalchemy import Select, and_, Delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.todo.models import Todo
-from core.db import BaseModel
-from core.db.session import session_factory, get_async_session
-
-ModelType = TypeVar("ModelType", bound=BaseModel)
-
-password_helper = PasswordHelper()
-
-guinevere_password_hash = password_helper.hash("guinevere")
-
-
-async def save(model: Type[ModelType]):
-    async with session_factory() as async_session:
-        async with async_session.begin():
-            async_session.add(model)
+from core.db.session import get_async_session
 
 
 class TodoRepositoryABC(abc.ABC):

@@ -10,7 +10,6 @@ from core.middleware.sqlalchemy import SQLAlchemyMiddleware
 
 app = FastAPI()
 
-app.include_router(todo_routes.router)
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
@@ -24,6 +23,7 @@ app.include_router(
     prefix="/user",
     tags=["auth"],
 )
+app.include_router(todo_routes.router)
 
 app.add_exception_handler(IntegrityError, generic_db_error_handler)
 

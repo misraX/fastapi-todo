@@ -2,7 +2,9 @@ from typing import List
 
 from fastapi import Depends, APIRouter
 
+from app.todo.schemas.request import SharedTodoRequestSchema
 from app.todo.schemas.response import TodoResponseSchema
+from app.todo.services.shared_todo import SharedTodoService
 from app.todo.services.todo import TodoRequestSchema, TodoService
 from app.user.auth import current_user
 from app.user.models.user import User
@@ -50,3 +52,13 @@ async def delete_todo(
 ):
     """Deleting an existing todo, this will delete only the user's todo."""
     return await todo_service.delete_todo_by_id(todo_id, user)
+
+
+@todo_router.post("/{todo_id}/share/")
+async def share_todo(
+    shared_todo: SharedTodoRequestSchema,
+    todo_id: int,
+    shared_todo_service: SharedTodoService = Depends(SharedTodoService),
+    user: User = Depends(current_user),
+):
+    return await shared_todo_service.share(shared_todo, todo_id, user)
