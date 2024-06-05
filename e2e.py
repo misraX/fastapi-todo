@@ -3,7 +3,7 @@ from faker import Faker
 
 faker = Faker()
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost"
 
 
 def register_user(username, password, email):

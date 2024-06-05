@@ -54,6 +54,14 @@ found [here](https://github.com/users/misraX/projects/1).
 
 - **GET** `/health` - [Read Root](http://localhost:8000/health)
 
+# Installation
+
+`docker-compose up -d`
+
+`docker-compose exec fastapi python -m alembic upgrade head` # Database migration
+
+`python e2e.py` make sure faker, requests is installed in your machine
+
 ## Main Libraries Used
 
 - `fastapi-user`
