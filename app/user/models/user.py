@@ -31,6 +31,8 @@ class User(SQLAlchemyBaseUserTableUUID, BaseModel):
     todos = relationship("Todo", back_populates="owner")
     tasks = relationship("Task", back_populates="owner")
 
+    associated_todos = relationship("Todo", secondary="shared_todo", viewonly=True)
+
 
 class UserDB(SQLAlchemyUserDatabase):
     async def get_by_username(self, username: str) -> Optional[UP]:
