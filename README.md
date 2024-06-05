@@ -1,6 +1,6 @@
 ## 📄 Overview
 
-This project is a FastAPI 🚀 Project designed to manage users' todos, and tasks.
+This project is a FastAPI 🚀 todo application, designed to manage users' todo lists.
 
 ## Project Backlog
 
