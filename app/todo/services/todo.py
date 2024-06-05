@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 
 from app.todo.models import Todo
 from app.todo.repositories.todo import TodoRepository, TodoRepositoryABC
-from app.todo.schemas.request import TodoRequestSchema
+from app.todo.schemas.request import TodoRequestSchema, TodoRequestPartialSchema
 from app.user.models.user import User
 from core.db import unit_of_work
 
@@ -29,7 +29,9 @@ class TodoService(object):
     async def delete_todo_by_id(self, todo_id: int, user: User) -> None:
         return await self.todo_repository.delete_todo_by_id(todo_id, user.id)
 
-    async def partial_update(self, todo_id: int, todo: TodoRequestSchema, user: User):
+    async def partial_update(
+        self, todo_id: int, todo: TodoRequestPartialSchema, user: User
+    ):
         todo_item: Todo = await self.todo_repository.get_todo_by_id(todo_id, user.id)
         if todo_item is None:
             raise HTTPException(status_code=404, detail="Todo not found")

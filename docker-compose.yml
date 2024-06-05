@@ -11,5 +11,15 @@ services:
     ports:
       - 5432:5432
 
+  fastapi:
+    build: ./
+    depends_on:
+      - database
+    env_file:
+      - .env
+    ports:
+      - 8000:80
+
+
 volumes:
   db_data:

@@ -9,8 +9,7 @@ from app.todo.repositories.task import TaskRepository, TaskRepositoryABC
 from app.todo.repositories.todo import TodoRepository, TodoRepositoryABC
 from app.todo.schemas.request import SharedTodoRequestSchema
 from app.user.auth import get_user_manager
-from app.user.models.user import UserManager
-from test.conftest import User
+from app.user.models.user import UserManager, User
 
 
 class SharedTodoService(object):

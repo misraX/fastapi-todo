@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import Depends, APIRouter
 
-from app.todo.schemas.request import SharedTodoRequestSchema
+from app.todo.schemas.request import SharedTodoRequestSchema, TodoRequestPartialSchema
 from app.todo.schemas.response import TodoResponseSchema
 from app.todo.services.shared_todo import SharedTodoService
 from app.todo.services.todo import TodoRequestSchema, TodoService
@@ -47,7 +47,7 @@ async def get_todos(
 @todo_router.patch("/{todo_id}", response_model=TodoResponseSchema)
 async def partial_update(
     todo_id: int,
-    todo: TodoRequestSchema,
+    todo: TodoRequestPartialSchema,
     user: User = Depends(current_user),
     todo_service: TodoService = Depends(TodoService),
 ):

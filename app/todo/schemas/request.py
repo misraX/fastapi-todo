@@ -9,6 +9,11 @@ class TodoRequestSchema(CommonTodoTasksMixin, BaseModel):
     ...
 
 
+class TodoRequestPartialSchema(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+
+
 class TaskRequestSchema(CommonTodoTasksMixin, BaseModel):
     todo_id: int
     priority: Optional[int]
