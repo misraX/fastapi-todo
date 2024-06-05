@@ -29,6 +29,10 @@ class TodoRepositoryABC(abc.ABC):
     async def delete_todo_by_id(self, todo_id: int, user_id: uuid.UUID) -> None:
         ...
 
+    @abc.abstractmethod
+    async def partial_update(self, todo_id: int, todo: Todo) -> Todo:
+        ...
+
 
 class TodoRepository(TodoRepositoryABC):
     def __init__(
@@ -64,3 +68,8 @@ class TodoRepository(TodoRepositoryABC):
         result = await self.session.execute(statement)
         await self.session.commit()
         return result
+
+    async def partial_update(self, todo_id: int, todo: Todo) -> Todo:
+        await self.session.commit()
+        await self.session.refresh(todo)
+        return todo

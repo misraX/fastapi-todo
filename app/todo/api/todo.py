@@ -44,6 +44,17 @@ async def get_todos(
     return todos
 
 
+@todo_router.patch("/{todo_id}", response_model=TodoResponseSchema)
+async def partial_update(
+    todo_id: int,
+    todo: TodoRequestSchema,
+    user: User = Depends(current_user),
+    todo_service: TodoService = Depends(TodoService),
+):
+    """Update an existing task, this will update the user's task. partially update the given fields"""
+    return await todo_service.partial_update(todo_id, todo, user)
+
+
 @todo_router.delete("/{todo_id}", status_code=204, response_model=None)
 async def delete_todo(
     todo_id: int,

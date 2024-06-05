@@ -28,3 +28,12 @@ class TodoService(object):
 
     async def delete_todo_by_id(self, todo_id: int, user: User) -> None:
         return await self.todo_repository.delete_todo_by_id(todo_id, user.id)
+
+    async def partial_update(self, todo_id: int, todo: TodoRequestSchema, user: User):
+        todo_item: Todo = await self.todo_repository.get_todo_by_id(todo_id, user.id)
+        if todo_item is None:
+            raise HTTPException(status_code=404, detail="Todo not found")
+        update_data = todo.dict(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(todo_item, key, value)
+        return await self.todo_repository.partial_update(todo_id, todo_item)

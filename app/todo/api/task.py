@@ -59,7 +59,7 @@ async def partial_update(
     task_id: int,
     task: TaskRequestPartialUpdateSchema,
     user: User = Depends(current_user),
-    task_service: TaskService = Depends(),
+    task_service: TaskService = Depends(TaskService),
 ):
     """Update an existing task, this will update the user's task. partially update the given fields"""
     return await task_service.partial_update(task_id, task, user)
