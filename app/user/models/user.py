@@ -19,7 +19,7 @@ from sqlalchemy.orm import relationship
 
 import app.todo.models as reload_related_models  # noqa
 from app.user.schema.request import UserCreateRequestScheme
-from core.db import BaseModel
+from core.db import BaseModel, unit_of_work
 from core.db.session import get_async_session
 from core.settings.config import settings
 
@@ -66,6 +66,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
         return user
 
+    @unit_of_work
     async def create(
         self,
         user_create: schemas.UC,

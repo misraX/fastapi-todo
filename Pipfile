@@ -21,6 +21,8 @@ httpx-oauth = "*"
 coverage = "*"
 pytest-dotenv = "*"
 python-dotenv = "*"
+faker = "*"
+requests = "*"
 
 [requires]
 python_version = "3.12"

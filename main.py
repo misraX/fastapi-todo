@@ -10,7 +10,6 @@ from core.middleware.sqlalchemy import SQLAlchemyMiddleware
 
 app = FastAPI()
 
-
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/user",
@@ -30,6 +29,14 @@ app.add_exception_handler(IntegrityError, generic_db_error_handler)
 app.add_middleware(SQLAlchemyMiddleware)
 
 
+# @app.on_event("shutdown")
+# async def on_shutdown():
+#     await engines[EngineType.READER_WRITER].dispose()
+
+
 @app.get("/health", tags=["health"])
 async def read_root():
     return {"message": "Welcome to the Game 🎮!"}
+
+
+###
