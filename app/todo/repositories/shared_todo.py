@@ -3,7 +3,7 @@ import uuid
 from typing import AsyncGenerator
 
 from fastapi import Depends
-from sqlalchemy import Select, and_
+from sqlalchemy import Select, and_, Delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -23,7 +23,11 @@ class SharedTodoRepositoryABC(abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def get_shared_todo_by_id(self, todo_id, user: uuid.UUID) -> SharedTodo:
+    async def get_shared_todo_by_id(self, todo_id: str, user: uuid.UUID) -> SharedTodo:
+        ...
+
+    @abc.abstractmethod
+    async def unshare(self, todo_id: str, user_id: uuid.UUID) -> None:
         ...
 
 
@@ -38,6 +42,14 @@ class SharedTodoRepository(SharedTodoRepositoryABC):
         await self.session.commit()
         await self.session.refresh(shared_todo)
         return shared_todo
+
+    async def unshare(self, todo_id: str, user_id: uuid.UUID) -> None:
+        statement = Delete(SharedTodo).where(
+            and_(SharedTodo.todo_id == todo_id, SharedTodo.user_id == user_id)
+        )
+        result = await self.session.execute(statement)
+        await self.session.commit()
+        return result
 
     async def get_shared_todos(
         self, user_id: uuid.UUID, skip: int, limit: int

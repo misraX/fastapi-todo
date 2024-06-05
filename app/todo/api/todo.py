@@ -62,3 +62,12 @@ async def share_todo(
     user: User = Depends(current_user),
 ):
     return await shared_todo_service.share(shared_todo, todo_id, user)
+
+
+@todo_router.delete("/{todo_id}/unshare/", status_code=204, response_model=None)
+async def unshare_todo(
+    todo_id: int,
+    shared_todo_service: SharedTodoService = Depends(SharedTodoService),
+    user: User = Depends(current_user),
+):
+    return await shared_todo_service.unshare(todo_id, user)

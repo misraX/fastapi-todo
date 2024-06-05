@@ -42,6 +42,10 @@ class SharedTodoService(object):
         shared_todo.todo_id = todo.id
         return await self.shared_todo_repository.share(shared_todo)
 
+    async def unshare(self, todo_id, user):
+        """Simpley delete the shared_todo record from the database"""
+        return await self.shared_todo_repository.unshare(todo_id, user.id)
+
     async def get_shared_todos(
         self, user: User, skip: int, limit: int
     ) -> list[SharedTodo]:
